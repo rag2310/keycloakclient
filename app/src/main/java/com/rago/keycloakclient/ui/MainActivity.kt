@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import com.auth0.android.jwt.JWT
 import com.rago.keycloakclient.R
 import com.rago.keycloakclient.databinding.ActivityMainBinding
 import com.rago.keycloakclient.utils.AuthStateManager
@@ -111,6 +112,8 @@ class MainActivity : AppCompatActivity() {
                         Log.d("Auth", "1 tokenAccess = ${resp.accessToken}")
                         resp.accessToken?.let {
                             token = it
+                            val jwt = JWT(it)
+                            Log.i("Token", "${jwt.claims.getValue("email").asString()}")
                         }
                     } else {
                         Log.d("Auth", "not tokenAccess")
