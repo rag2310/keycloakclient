@@ -32,14 +32,14 @@ class AuthStateManager(private val context: Context) {
         mCurrentAuthState = AtomicReference()
     }
 
-    @AnyThread
+    /*@AnyThread
     fun getInstance(): AuthStateManager {
         var manager: AuthStateManager? = INSTANCE_REF.get().get()
         if (manager == null) {
             manager = AuthStateManager(context.applicationContext)
         }
         return manager
-    }
+    }*/
 
     @AnyThread
     @NonNull
