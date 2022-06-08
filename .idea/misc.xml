@@ -6,6 +6,8 @@
         <entry key="..\:/Users/KATANA/Projects/projects_personal/KeycloakClient/app/src/main/res/drawable/appauth_96dp.xml" value="0.123" />
         <entry key="..\:/Users/KATANA/Projects/projects_personal/KeycloakClient/app/src/main/res/drawable/unknown_user_48dp.xml" value="0.124" />
         <entry key="..\:/Users/KATANA/Projects/projects_personal/KeycloakClient/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/KATANA/Projects/projects_personal/KeycloakClient/app/src/main/res/layout/fragment_login.xml" value="0.24682971014492755" />
+        <entry key="..\:/Users/KATANA/Projects/projects_personal/KeycloakClient/app/src/main/res/layout/fragment_token.xml" value="0.24010416666666667" />
       </map>
     </option>
   </component>

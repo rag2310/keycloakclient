@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import com.auth0.android.jwt.JWT
 import com.rago.keycloakclient.R
@@ -23,22 +24,80 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mStateManager: AuthStateManager
 
-    @Inject
-    lateinit var mAuthorizationServiceConfiguration: AuthorizationServiceManager
-
     companion object {
-        private val RC_AUTH = 100
+        private const val TAG = "MainActivity"
     }
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mAuthService: AuthorizationService
     private lateinit var token: String
 
+    /*private val authentication =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val intentResult = result.data
+            if (intentResult != null) {
+                var uriResult = intentResult.data
+                val oauth2Redirect = Uri.parse("com.rago.keycloakclient:/oauth2redirect")
+                val logoutRedirect = Uri.parse("com.rago.keycloakclient:/logout")
+                val indexUri = uriResult.toString().indexOf("?", 0)
+                uriResult = Uri.parse(uriResult.toString().substring(0, indexUri))
+                if (uriResult != null) {
+                    when (uriResult) {
+                        oauth2Redirect -> {
+                            val authorizationResponse =
+                                AuthorizationResponse.fromIntent(intentResult)
+                            val authorizationException =
+                                AuthorizationException.fromIntent(intentResult)
+                            if (authorizationResponse != null) {
+                                mAuthService = AuthorizationService(this)
+                                mStateManager.updateAfterAuthorization(
+                                    authorizationResponse,
+                                    authorizationException
+                                )
+                                mAuthService.performTokenRequest(
+                                    authorizationResponse.createTokenExchangeRequest()
+                                ) { tokenResponse, exception ->
+                                    if (tokenResponse != null) {
+                                        mStateManager.updateAfterTokenResponse(
+                                            tokenResponse,
+                                            exception
+                                        )
+                                        mBinding.buttonLogin.text = "LogOut"
+                                        tokenResponse.accessToken?.let { accessToken ->
+                                            token = accessToken
+                                            val jwt = JWT(accessToken)
+                                            Log.i(
+                                                TAG,
+                                                "jwt: ${jwt.claims.getValue("email").asString()}"
+                                            )
+                                        }
+                                    } else {
+                                        Log.i(TAG, "authentication: not authentication")
+                                    }
+                                }
+                            } else {
+                                Log.i(TAG, "authentication: not authentication")
+                            }
+                        }
+                        logoutRedirect -> {
+                            mBinding.buttonLogin.text = "LogIn"
+                            token = ""
+                            signOut()
+                        }
+                    }
+                } else {
+                    Log.i(TAG, "registerForActivityResult: uri null")
+                }
+            } else {
+                Log.i(TAG, "registerForActivityResult: intent null")
+            }
+        }*/
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        mAuthService = AuthorizationService(this)
+        /*mAuthService = AuthorizationService(this)
 
         if (mStateManager.getCurrent().isAuthorized) {
             Log.d("Auth", "Done")
@@ -68,16 +127,22 @@ class MainActivity : AppCompatActivity() {
                         )
                         .build()
 
-                val intent = mAuthService.getEndSessionRequestIntent(endSessionRequest)
-                startActivityForResult(intent, RC_AUTH + 1)
-
+                val endIntent = mAuthService.getEndSessionRequestIntent(endSessionRequest)
+                authentication.launch(endIntent)
             } else {
 
                 val clientId = "curso-web"
-//                val clientId = "account-console"
+                val authorizationServiceConfiguration =
+                    AuthorizationServiceConfiguration(
+                        Uri.parse("https://sso-dev.trackchain.io/auth/realms/trackchain/protocol/openid-connect/auth"),
+                        Uri.parse("https://sso-dev.trackchain.io/auth/realms/trackchain/protocol/openid-connect/token"),
+                        null,
+                        Uri.parse("https://sso-dev.trackchain.io/auth/realms/trackchain/protocol/openid-connect/logout")
+                    )
                 val redirectUri = Uri.parse("com.rago.keycloakclient:/oauth2redirect")
+
                 val builder = AuthorizationRequest.Builder(
-                    mAuthorizationServiceConfiguration.getAuthorizationServiceConfiguration(),
+                    authorizationServiceConfiguration,
                     clientId,
                     ResponseTypeValues.CODE,
                     redirectUri
@@ -87,65 +152,9 @@ class MainActivity : AppCompatActivity() {
                 val authRequest = builder.build()
                 val authService = AuthorizationService(this)
                 val authIntent = authService.getAuthorizationRequestIntent(authRequest)
-                startActivityForResult(authIntent, RC_AUTH)
+                authentication.launch(authIntent)
             }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_AUTH) {
-            val resp = AuthorizationResponse.fromIntent(data!!)
-            val ex = AuthorizationException.fromIntent(data)
-
-            if (resp != null) {
-                mAuthService = AuthorizationService(this)
-                mStateManager.updateAfterAuthorization(resp, ex)
-
-                mAuthService.performTokenRequest(
-                    resp.createTokenExchangeRequest()
-                ) { resp, ex ->
-                    if (resp != null) {
-                        mStateManager.updateAfterTokenResponse(resp, ex)
-                        mBinding.buttonLogin.text = "Logout"
-                        Log.d("Auth", "1 tokenAccess = ${resp.accessToken}")
-                        resp.accessToken?.let {
-                            token = it
-                            val jwt = JWT(it)
-                            Log.i("Token", "${jwt.claims.getValue("email").asString()}")
-                        }
-                    } else {
-                        Log.d("Auth", "not tokenAccess")
-                    }
-                }
-                Log.d("Auth", "2 tokenAccess = ${resp.accessToken}")
-                resp.accessToken?.let {
-                    token = it
-                }
-            } else {
-                Log.d("Auth", "not tokenAccess")
-            }
-
-            if (mStateManager.getCurrent().isAuthorized) {
-                Log.d("Auth", "Done")
-                mBinding.buttonLogin.text = "Logout"
-                mStateManager.getCurrent().performActionWithFreshTokens(
-                    mAuthService
-                ) { token, idToken, exception ->
-                    Log.d("Auth", "3 tokenAccess $token")
-                    token?.let {
-                        this.token = it
-                    }
-                }
-            }
-        }
-
-        if (requestCode == RC_AUTH + 1) {
-            mBinding.buttonLogin.text = "LogIn"
-            token = ""
-            signOut()
-        }
+        }*/
     }
 
     private fun signOut() {
