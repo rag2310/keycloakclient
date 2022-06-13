@@ -1,21 +1,16 @@
 package com.rago.keycloakclient.ui
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.auth0.android.jwt.JWT
 import com.rago.keycloakclient.R
 import com.rago.keycloakclient.databinding.ActivityMainBinding
 import com.rago.keycloakclient.utils.AuthStateManager
-import com.rago.keycloakclient.utils.AuthorizationServiceManager
 import dagger.hilt.android.AndroidEntryPoint
-import net.openid.appauth.*
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationService
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -158,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        val currentState = mStateManager.getCurrent()
+        val currentState = mStateManager.getInstance()
         val clearedState = AuthState(currentState.authorizationServiceConfiguration!!)
 
         if (currentState.lastRegistrationResponse != null) {

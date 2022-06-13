@@ -2,7 +2,7 @@ package com.rago.keycloakclient.di
 
 import android.content.Context
 import com.rago.keycloakclient.utils.AuthStateManager
-import com.rago.keycloakclient.utils.AuthorizationServiceManager
+import com.rago.keycloakclient.utils.KeyCloakClientSharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +17,17 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAuthStateManager(@ApplicationContext context: Context) = AuthStateManager(context)
+    fun provideAuthorizationService(@ApplicationContext context: Context) =
+        AuthorizationService(context)
 
     @Singleton
     @Provides
-    fun provideAuthorizationService(@ApplicationContext context: Context) = AuthorizationService(context)
+    fun provideKeyCloakClientSharedPreferences(@ApplicationContext context: Context) =
+        KeyCloakClientSharedPreferences(context)
+
+    @Singleton
+    @Provides
+    fun provideAuthStateManager(
+        keyCloakClientSharedPreferences: KeyCloakClientSharedPreferences
+    ) = AuthStateManager(keyCloakClientSharedPreferences)
 }
