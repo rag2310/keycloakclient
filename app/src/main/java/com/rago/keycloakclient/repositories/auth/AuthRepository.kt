@@ -72,6 +72,7 @@ class AuthRepository @Inject constructor(
             clearedState.update(authState.lastRegistrationResponse)
         }
         authStateManager.replace(clearedState)
+        rolesManager.destroy()
     }
 
     fun logOut(onLaunch: (Intent) -> Unit) {

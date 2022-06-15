@@ -49,6 +49,10 @@ class TokenFragment : Fragment() {
             shipper.setOnClickListener {
                 findNavController().navigate(TokenFragmentDirections.actionTokenFragmentToShipperFragment())
             }
+
+            booking.setOnClickListener {
+                findNavController().navigate(TokenFragmentDirections.actionTokenFragmentToBookingFragment())
+            }
         }
     }
 

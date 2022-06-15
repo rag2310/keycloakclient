@@ -1,11 +1,18 @@
 package com.rago.keycloakclient.utils.roles
 
+import android.util.Log
+
 class RolesManager {
     private val myRoles: MutableList<RolesEnum> = mutableListOf()
     private val myActions: MutableMap<String, ActionsEnum> = mutableMapOf()
 
     companion object {
         private const val TAG = "RolesManager"
+    }
+
+    fun destroy() {
+        myRoles.clear()
+        myActions.clear()
     }
 
     fun build(roles: List<String>) {
@@ -26,14 +33,21 @@ class RolesManager {
             val c = rol.trim()[0]
             if (c == 'a') {
                 if (rol.contains("view"))
-                    myActions[rol] = ActionsEnum.VIEW
+                    myActions[rol.trim()] = ActionsEnum.VIEW
                 if (rol.contains("created"))
-                    myActions[rol] = ActionsEnum.CREATED
+                    myActions[rol.trim()] = ActionsEnum.CREATED
                 if (rol.contains("delete"))
-                    myActions[rol] = ActionsEnum.DELETE
+                    myActions[rol.trim()] = ActionsEnum.DELETE
                 if (rol.contains("update"))
-                    myActions[rol] = ActionsEnum.UPDATE
+                    myActions[rol.trim()] = ActionsEnum.UPDATE
             }
+        }
+
+        myRoles.forEach {
+            Log.i(TAG, "build: $it")
+        }
+        myActions.forEach { (s, actionsEnum) ->
+            Log.i(TAG, "build: $s: $actionsEnum")
         }
     }
 
@@ -53,6 +67,9 @@ class RolesManager {
         iHavePermission(rol, ActionsEnum.DELETE)
 
     private fun iHavePermission(rol: RolesEnum, action: ActionsEnum): Boolean {
+        val nonRoleActions = myActions.filterKeys {
+            it.contains(rol.toString().lowercase())
+        }
         return when {
             myRoles.contains(RolesEnum.ADMIN) -> true
             myRoles.contains(rol) -> {
@@ -61,6 +78,7 @@ class RolesManager {
                 }
                 actions.containsValue(action)
             }
+            nonRoleActions.containsValue(action) -> true
             else -> false
         }
     }

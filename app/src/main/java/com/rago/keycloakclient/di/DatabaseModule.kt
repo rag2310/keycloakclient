@@ -3,6 +3,7 @@ package com.rago.keycloakclient.di
 import android.content.Context
 import androidx.room.Room
 import com.rago.keycloakclient.db.MyDatabase
+import com.rago.keycloakclient.db.dao.BookingDao
 import com.rago.keycloakclient.db.dao.ShipperDao
 import dagger.Module
 import dagger.Provides
@@ -23,4 +24,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideShipperDao(myDatabase: MyDatabase): ShipperDao = myDatabase.shipperDao()
+
+    @Provides
+    @Singleton
+    fun provideBookingDao(myDatabase: MyDatabase): BookingDao = myDatabase.bookingDao()
 }

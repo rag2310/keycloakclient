@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_tokenFragment_to_shipperFragment"
             app:destination="@id/shipperFragment" />
+        <action
+            android:id="@+id/action_tokenFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
     </fragment>
     <fragment
         android:id="@+id/shipperFragment"
@@ -52,5 +55,28 @@
             app:destination="@id/shipperFragment"
             app:popUpTo="@id/shipperDetailsFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookingFragment"
+        android:name="com.rago.keycloakclient.ui.booking.booking.BookingFragment"
+        android:label="fragment_booking"
+        tools:layout="@layout/fragment_booking" >
+        <action
+            android:id="@+id/action_bookingFragment_to_bookingDetailsFragment"
+            app:destination="@id/bookingDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookingDetailsFragment"
+        android:name="com.rago.keycloakclient.ui.booking.details.BookingDetailsFragment"
+        android:label="fragment_booking_details"
+        tools:layout="@layout/fragment_booking_details" >
+        <action
+            android:id="@+id/action_bookingDetailsFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment"
+            app:popUpTo="@id/bookingDetailsFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="currentBooking"
+            app:argType="com.rago.keycloakclient.db.entities.Booking" />
     </fragment>
 </navigation>
