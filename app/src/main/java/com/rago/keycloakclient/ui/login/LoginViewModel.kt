@@ -1,7 +1,6 @@
 package com.rago.keycloakclient.ui.login
 
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rago.keycloakclient.repositories.auth.AuthRepository
@@ -9,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,13 +63,6 @@ class LoginViewModel @Inject constructor(
                         LoginUIState.Error("authentication: not authentication")
                 }
             }
-        }
-    }
-
-    fun test() {
-        viewModelScope.launch {
-            Log.i("AuthRepository","test: ${Date()}")
-            repository.test()
         }
     }
 }

@@ -46,6 +46,9 @@ class TokenFragment : Fragment() {
                     authentication.launch(it)
                 }
             }
+            shipper.setOnClickListener {
+                findNavController().navigate(TokenFragmentDirections.actionTokenFragmentToShipperFragment())
+            }
         }
     }
 
@@ -61,6 +64,29 @@ class TokenFragment : Fragment() {
 
             launch {
                 mViewModel.exp.collect(::exp)
+            }
+            launch {
+                mViewModel.tokenUIState.collect(::tokenUiState)
+            }
+        }
+    }
+
+    private fun tokenUiState(value: TokenUIState) {
+        when (value) {
+            TokenUIState.NotState -> {}
+            is TokenUIState.Permissions -> {
+                setUpUIPermissions(value)
+            }
+        }
+    }
+
+    private fun setUpUIPermissions(value: TokenUIState.Permissions) {
+        mBinding.apply {
+            if (value.viewBooking) {
+                booking.visibility = View.VISIBLE
+            }
+            if (value.viewShipper) {
+                shipper.visibility = View.VISIBLE
             }
         }
     }

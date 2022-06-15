@@ -26,5 +26,31 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/tokenFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_tokenFragment_to_shipperFragment"
+            app:destination="@id/shipperFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shipperFragment"
+        android:name="com.rago.keycloakclient.ui.shipper.shipper.ShipperFragment"
+        android:label="fragment_shipper"
+        tools:layout="@layout/fragment_shipper" >
+        <action
+            android:id="@+id/action_shipperFragment_to_shipperDetailsFragment"
+            app:destination="@id/shipperDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shipperDetailsFragment"
+        android:name="com.rago.keycloakclient.ui.shipper.details.ShipperDetailsFragment"
+        android:label="fragment_shipper_details"
+        tools:layout="@layout/fragment_shipper_details" >
+        <argument
+            android:name="currentShipper"
+            app:argType="com.rago.keycloakclient.db.entities.Shipper" />
+        <action
+            android:id="@+id/action_shipperDetailsFragment_to_shipperFragment"
+            app:destination="@id/shipperFragment"
+            app:popUpTo="@id/shipperDetailsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -3,26 +3,32 @@ package com.rago.keycloakclient.repositories.auth
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.work.ListenableWorker
 import com.rago.keycloakclient.ui.login.LoginUIState
 import com.rago.keycloakclient.utils.AuthStateManager
-import com.rago.keycloakclient.utils.callbacks.TokenCallback
+import com.rago.keycloakclient.utils.roles.RolesEnum
+import com.rago.keycloakclient.utils.roles.RolesManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.callbackFlow
 import net.openid.appauth.*
 import java.util.*
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
     private val authStateManager: AuthStateManager,
-    private val authorizationService: AuthorizationService
+    private val authorizationService: AuthorizationService,
+    private val rolesManager: RolesManager
 ) {
     fun getToken() = authStateManager.getInstance().accessToken!!
     fun getTokenRefresh() = authStateManager.getInstance().refreshToken
+    fun buildRoles(rolesEnum: List<String>) = rolesManager.build(rolesEnum)
+    fun permissionToView(rol: RolesEnum) = rolesManager.permissionToView(rol)
+    fun permissionToUpdateOrDelete(rol: RolesEnum) = rolesManager.permissionToUpdateOrDelete(rol)
+    fun permissionToCreated(rol: RolesEnum) = rolesManager.permissionToCreated(rol)
+    fun permissionToUpdate(rol: RolesEnum) = rolesManager.permissionToUpdate(rol)
+    fun permissionToDelete(rol: RolesEnum) = rolesManager.permissionToDelete(rol)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun workerRefresh() = callbackFlow {
@@ -101,7 +107,7 @@ class AuthRepository @Inject constructor(
     }
 
     fun login(onLaunch: (Intent) -> Unit) {
-        val clientId = "curso-web"
+        val clientId = "login-app"
         val authorizationServiceConfiguration =
             AuthorizationServiceConfiguration(
                 Uri.parse("https://sso-dev.trackchain.io/auth/realms/trackchain/protocol/openid-connect/auth"),
@@ -166,21 +172,5 @@ class AuthRepository @Inject constructor(
             return LoginUIState.Error("intent null")
         }
         return LoginUIState.NotState
-    }
-
-    suspend fun test() {
-        try {
-            val value = workerRefresh().first()
-            Log.i("AuthRepository", "value ${value!!.accessToken} ${Date()}")
-        } catch (ex: CancellationException) {
-            Log.i("AuthRepository", "CancellationException ${ex.message} ${Date()}")
-        } catch (e: Exception) {
-            Log.i("AuthRepository", "Exception ${e.message} ${Date()}")
-        }
-    }
-
-    private fun flowTest(): Flow<String> = flow {
-        delay(2000)
-        emit("test")
     }
 }
