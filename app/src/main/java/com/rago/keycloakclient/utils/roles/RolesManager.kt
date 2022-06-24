@@ -19,6 +19,8 @@ class RolesManager {
         myRoles.clear()
         myActions.clear()
         roles.forEach { rol ->
+
+            // IS ROL
             if (rol.contains("r_admin")) {
                 myRoles.add(RolesEnum.ADMIN)
             }
@@ -30,8 +32,8 @@ class RolesManager {
             if (rol.contains("r_booking")) {
                 myRoles.add(RolesEnum.BOOKING)
             }
-            val c = rol.trim()[0]
-            if (c == 'a') {
+             // IS ACTIONS
+            if (rol[0] == 'a') {
                 if (rol.contains("view"))
                     myActions[rol.trim()] = ActionsEnum.VIEW
                 if (rol.contains("created"))
@@ -41,13 +43,6 @@ class RolesManager {
                 if (rol.contains("update"))
                     myActions[rol.trim()] = ActionsEnum.UPDATE
             }
-        }
-
-        myRoles.forEach {
-            Log.i(TAG, "build: $it")
-        }
-        myActions.forEach { (s, actionsEnum) ->
-            Log.i(TAG, "build: $s: $actionsEnum")
         }
     }
 

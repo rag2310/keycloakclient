@@ -108,7 +108,8 @@ class AuthRepository @Inject constructor(
     }
 
     fun login(onLaunch: (Intent) -> Unit) {
-        val clientId = "login-app"
+//        val clientId = "login-app"
+        val clientId = "curso-web"
         val authorizationServiceConfiguration =
             AuthorizationServiceConfiguration(
                 Uri.parse("https://sso-dev.trackchain.io/auth/realms/trackchain/protocol/openid-connect/auth"),

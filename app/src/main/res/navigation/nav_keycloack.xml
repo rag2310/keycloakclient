@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_tokenFragment_to_bookingFragment"
             app:destination="@id/bookingFragment" />
+        <action
+            android:id="@+id/action_tokenFragment_to_petitionsFragment"
+            app:destination="@id/petitionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/shipperFragment"
@@ -79,4 +82,9 @@
             android:name="currentBooking"
             app:argType="com.rago.keycloakclient.db.entities.Booking" />
     </fragment>
+    <fragment
+        android:id="@+id/petitionsFragment"
+        android:name="com.rago.keycloakclient.ui.petitions.PetitionsFragment"
+        android:label="fragment_petitions"
+        tools:layout="@layout/fragment_petitions" />
 </navigation>

@@ -53,6 +53,9 @@ class TokenFragment : Fragment() {
             booking.setOnClickListener {
                 findNavController().navigate(TokenFragmentDirections.actionTokenFragmentToBookingFragment())
             }
+            petitions.setOnClickListener {
+                findNavController().navigate(TokenFragmentDirections.actionTokenFragmentToPetitionsFragment())
+            }
         }
     }
 

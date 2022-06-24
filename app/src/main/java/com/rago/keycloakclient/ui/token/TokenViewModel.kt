@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.auth0.android.jwt.JWT
 import com.rago.keycloakclient.repositories.auth.AuthRepository
+import com.rago.keycloakclient.utils.model.ResourceAccess
 import com.rago.keycloakclient.utils.roles.RolesEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,8 +65,16 @@ class TokenViewModel @Inject constructor(
 
     private fun setValuesUI() {
         val jwt = JWT(repository.getToken())
-        jwt.claims.forEach { (s, claim) ->
-            Log.i(TAG, "setValuesUI: $s: ${claim.asString()}")
+        jwt.claims["resource_access"]?.let { claim ->
+            val resourceAccess = claim.asObject(ResourceAccess::class.java)
+            resourceAccess?.let {
+                it.loginApp?.let { loginApp ->
+                    if (loginApp.roles.isNotEmpty())
+                        repository.buildRoles(it.loginApp.roles)
+                }
+
+            }
+
         }
         jwt.claims["roles"]?.let { roles ->
             val value = roles.asString()
@@ -87,7 +96,6 @@ class TokenViewModel @Inject constructor(
             repository.permissionToView(RolesEnum.SHIPPER)
         )
     }
-
 
 
     companion object {
